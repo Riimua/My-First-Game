@@ -1,0 +1,106 @@
+from turtle import width
+import pygame
+import os
+
+pygame.init()
+
+FPS = 60
+kx = 100
+ky = 280
+knightloop = 0
+subknightloop = 0
+width, height = 900, 600
+animation = 1
+Knight = pygame.transform.scale(pygame.image.load(os.path.join("KnightIdle", "frame_0.gif")),(width/3, height/3))
+facing = True
+
+def Knight_idle():
+    global knightloop
+    global subknightloop
+    global width
+    global height
+    global facing
+    subknightloop += 1
+    if subknightloop >=5:
+        subknightloop = 0
+        if knightloop >= 9:
+            knightloop = 0
+        else:
+            knightloop += 1
+    if facing == True:
+        return(pygame.transform.scale(pygame.image.load(os.path.join("KnightIdle", "frame_" + str(knightloop) + ".gif")),(width/3, height/3)))
+    elif facing == False:
+        return(pygame.transform.flip(pygame.transform.scale(pygame.image.load(os.path.join("KnightIdle", "frame_" + str(knightloop) + ".gif")),(width/3, height/3)), True, False))
+
+def Knight_Run():
+    global knightloop
+    global subknightloop
+    global width
+    global height
+    global facing
+    subknightloop += 1
+    if subknightloop >=4:
+        subknightloop = 0
+        if knightloop >= 9:
+            knightloop = 0
+        else:
+            knightloop += 1
+    if facing == True:
+        return(pygame.transform.scale(pygame.image.load(os.path.join("KnightRun", "frame_" + str(knightloop) + ".gif")),(width/3, height/3)))
+    elif facing == False:
+        return(pygame.transform.flip(pygame.transform.scale(pygame.image.load(os.path.join("KnightRun", "frame_" + str(knightloop) + ".gif")),(width/3, height/3)), True, False))
+
+WIN = pygame.display.set_mode((width, height))
+bg = pygame.transform.scale(pygame.image.load(os.path.join("Assets", "Game_BG2.png")).convert(),(width, height))
+pygame.display.set_caption("Game")
+
+def draw_window():
+    global animation
+    global knightloop
+    pygame.display.flip()
+    WIN.blit(bg,(0,0))
+    WIN.blit(Knight, (kx,ky))
+    pygame.display.update
+
+
+def main():
+    global animation
+    global kx
+    global ky
+    global keys_pressed
+    global Knight
+    global facing
+    clock = pygame.time.Clock()
+    run = True
+    while run:
+        clock.tick(FPS)
+        draw_window()
+        
+        if animation == 1:
+            Knight = Knight_idle()
+        elif animation == 2:
+            Knight = Knight_Run()
+            
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[pygame.K_d]:
+            animation = 2
+            kx += 5
+            facing = True
+        elif keys_pressed[pygame.K_a]:
+            kx -= 5
+            animation = 2
+            facing = False
+        else:
+            animation = 1
+            
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        
+       
+                
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
